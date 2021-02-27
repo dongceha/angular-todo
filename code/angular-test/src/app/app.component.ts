@@ -1,5 +1,5 @@
 import { selectTodos } from './store/selector/todo.selectors';
-import { addTodo, deleteTodo } from './store/actions/todo.actions';
+import { addTodo, deleteTodo, deleteTodos } from './store/actions/todo.actions';
 import { AppState } from './store/index';
 // import {
 //   animate,
@@ -70,6 +70,7 @@ import { select } from '@ngrx/store';
 export class AppComponent implements AfterViewInit{
   @ViewChild('AddTodoInput') AddTodoInput!: ElementRef;
   todos: Observable<Todo[]>;
+  checkeds: string[] = [];
   constructor(private store: Store<AppState>) {
     this.todos = this.store.pipe(select(selectTodos))
   }
@@ -89,6 +90,17 @@ export class AppComponent implements AfterViewInit{
   }
   deleteTodo(id: string) {
     this.store.dispatch(deleteTodo({id}));
+  }
+  deleteTodos() {
+    this.store.dispatch(deleteTodos({ids: this.checkeds}))
+  }
+  changeInput(id: string) {
+    const index = this.checkeds.findIndex(check => check === id);
+    if (index > -1) {
+      this.checkeds.splice(index, 1);
+    } else {
+      this.checkeds.push(id);
+    }
   }
   // prepare(outlet: RouterOutlet) {
   //   if (
